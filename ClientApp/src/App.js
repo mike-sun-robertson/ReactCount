@@ -1,22 +1,74 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router';
 import { Layout } from './components/Layout';
-import { Home } from './components/Home';
-import { FetchData } from './components/FetchData';
-import { Counter } from './components/Counter';
+import Counters from './components/Counters';
+import Counter from './components/Counter';
 
 import './custom.css'
 
-export default class App extends Component {
-  static displayName = App.name;
+import NavBar from './components/NavBar';
 
-  render () {
-    return (
-      <Layout>
-        <Route exact path='/' component={Home} />
-        <Route path='/counter' component={Counter} />
-        <Route path='/fetch-data' component={FetchData} />
-      </Layout>
-    );
-  }
+export default class App extends Component {
+    state = {
+        counters: [
+            { id: 1, value: 0 },
+            { id: 2, value: 0 },
+            { id: 3, value: 0 },
+            { id: 4, value: 0 }
+        ]
+    };
+
+    handleIncrement = counter => {
+        const counters = [...this.state.counters];
+        const index = counters.indexOf(counter);
+        counters[index] = { ...counters[index] };
+        counters[index].value++;
+        this.setState({ counters });
+    };
+
+    handleDecrement = counter => {
+        const counters = [...this.state.counters];
+        const index = counters.indexOf(counter);
+        counters[index] = { ...counters[index] };
+        counters[index].value--;
+        this.setState({ counters });
+    };
+
+    handleReset = () => {
+        const counters = this.state.counters.map(c => {
+            c.value = 0;
+            return c;
+        });
+        this.setState({ counters });
+    };
+
+    handleDelete = counterId => {
+        const counters = this.state.counters.filter(c => c.id !== counterId);
+        this.setState({ counters });
+    };
+
+    handleRestart = () => {
+        window.location.reload();
+    };
+
+    render() {
+        return (
+            <div>
+                <NavBar
+                    totalCounters={this.state.counters.filter(c => c.value > 0).reduce((a, v) => a = a + v.value, 0)}
+                />
+                <main className="container">
+                    <Counters
+                        counters={this.state.counters}
+                        onReset={this.handleReset}
+                        onIncrement={this.handleIncrement}
+                        onDecrement={this.handleDecrement}
+                        onDelete={this.handleDelete}
+                        onRestart={this.handleRestart}
+                    />
+                </main>
+            </div>
+        );
+    }
 }
+

@@ -1,31 +1,61 @@
 import React, { Component } from 'react';
+import { FaTrashAlt } from "react-icons/fa";
+import { IoAddCircle } from "react-icons/io5";
+import { IoRemoveCircle } from "react-icons/io5";
 
-export class Counter extends Component {
-  static displayName = Counter.name;
+export default class Counter extends Component {
+    render() {
+        return (
+            <div>
+                <div className="row">
+                    <div className="col-md-1">
+                        <span style={{ fontSize: 24 }} className={this.setClass()}>
+                            {this.showCount()}
+                        </span>
+                    </div>
+                    <div className="col-md-4">
+                        <button
+                            className="btn btn-secondary"
+                            onClick={() => this.props.onIncrement(this.props.counter)}
+                        >
+                            <IoAddCircle /> 
+                        </button>
+                        <button
+                            className="btn btn-info m-2"
+                            onClick={() => this.props.onDecrement(this.props.counter)}
+                            disabled={this.props.counter.value === 0 ? "disabled" : ""}
+                        >
+                            <IoRemoveCircle />
+                        </button>
+                        <button
+                            className="btn btn-danger"
+                            onClick={() => this.props.onDelete(this.props.counter.id)}
+                        >
+                            <FaTrashAlt />
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
-  constructor(props) {
-    super(props);
-    this.state = { currentCount: 0 };
-    this.incrementCounter = this.incrementCounter.bind(this);
-  }
+    setClass = () => {
+        let classes = "badge m-2 badge-";
+        if (this.props.counter.value === 0) {
+            classes += "warning";
+        } else {
+            classes += "primary";
+        }
+  
+        return classes;
+    };
 
-  incrementCounter() {
-    this.setState({
-      currentCount: this.state.currentCount + 1
-    });
-  }
-
-  render() {
-    return (
-      <div>
-        <h1>Counter</h1>
-
-        <p>This is a simple example of a React component.</p>
-
-        <p aria-live="polite">Current count: <strong>{this.state.currentCount}</strong></p>
-
-        <button className="btn btn-primary" onClick={this.incrementCounter}>Increment</button>
-      </div>
-    );
-  }
+    showCount = () => {
+        const { value } = this.props.counter;
+        if (value === 0) {
+            return "Zero";
+        } else {
+            return value;
+        }
+    };
 }
